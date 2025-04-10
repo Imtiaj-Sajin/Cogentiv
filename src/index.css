@@ -87,6 +87,10 @@ body, html, #root {
   background-color: #F5F5F7;
 }
 
+.dark body, .dark html, .dark #root {
+  background-color: #0F172A;
+}
+
 .tab-indicator {
   height: 2px;
   background-color: #FF6A71;
@@ -109,14 +113,28 @@ body, html, #root {
   transition: all 0.2s ease;
 }
 
+.dark .tool-card {
+  background-color: #1F2937;
+  border: 1px solid #2D3748;
+}
+
 .tool-card:hover {
   background-color: #F9FAFB;
   border-color: #EAECEF;
 }
 
+.dark .tool-card:hover {
+  background-color: #1F2937;
+  border-color: #2D3748;
+}
+
 .active-tab {
   color: #000000;
   position: relative;
+}
+
+.dark .active-tab {
+  color: #FFFFFF;
 }
 
 .tab-underline {
@@ -132,6 +150,14 @@ body, html, #root {
   color: #6B7280;
 }
 
+.dark .inactive-tab {
+  color: #9CA3AF;
+}
+
 .tab-button:hover {
   color: #000000;
+}
+
+.dark .tab-button:hover {
+  color: #FFFFFF;
 }
