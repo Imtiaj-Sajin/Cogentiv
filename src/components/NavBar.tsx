@@ -8,7 +8,7 @@ const NavBar: React.FC = () => {
       <div className="flex items-center">
         <div className="flex items-center mr-10">
           <div className="cohere-logo mr-2"></div>
-          <span className="font-medium text-lg text-[#111827]">cohere</span>
+          <span className="font-medium text-lg text-[#111827]">cogentiv</span>
         </div>
         
         <div className="flex items-center space-x-6">

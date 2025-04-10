@@ -103,7 +103,7 @@ body, html, #root {
   width: 28px;
   height: 28px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #8674E1 0%, #7557E9 100%);
+  background: linear-gradient(135deg, #8674E1 0%, #4b1ffd 100%);
 }
 
 .tool-card {

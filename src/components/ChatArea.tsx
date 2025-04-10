@@ -84,7 +84,7 @@ const ChatArea: React.FC = () => {
   return (
     <div className="flex-grow flex flex-col h-full overflow-hidden bg-white dark:bg-[#111827] border-r border-[#EAECEF] dark:border-[#2D3748]">
       <div className="border-b border-[#EAECEF] dark:border-[#2D3748] py-3 px-4 flex items-center justify-between">
-        <h2 className="text-base font-medium text-[#111827] dark:text-white">Chat with Cohere</h2>
+        <h2 className="text-base font-medium text-[#111827] dark:text-white">Chat with Cogentiv</h2>
         <div className="flex items-center space-x-1">
           <Popover>
             <PopoverTrigger asChild>
