@@ -6,9 +6,9 @@ import ChatArea from '@/components/ChatArea';
 
 const Index = () => {
   return (
-    <div className="h-screen flex flex-col bg-[#f7f7f7]">
+    <div className="h-screen flex flex-col bg-[#F5F5F7]">
       <NavBar />
-      <div className="flex-grow flex overflow-hidden shadow-sm max-w-[1440px] mx-auto w-full bg-white rounded-lg my-2">
+      <div className="flex-grow flex h-[calc(100vh-56px)]">
         <ChatSidebar />
         <ChatArea />
       </div>
