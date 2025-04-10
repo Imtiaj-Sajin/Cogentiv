@@ -62,11 +62,11 @@ const ChatArea: React.FC = () => {
       </div>
       
       <div className="p-4 border-t border-[#EAECEF]">
-        <div className="max-w-[800px] mx-auto">
+        <div className=" mx-auto">
           <div className="relative">
             <Textarea 
               placeholder="Message..." 
-              className="w-full rounded-lg border border-[#EAECEF] min-h-[56px] resize-none px-4 py-3 pr-12 text-[#111827] focus:outline-none focus:ring-1 focus:ring-[#7557E9]"
+              className="w-full rounded-xl border border-[#666666] min-h-[56px] resize-none px-4 py-3 pr-12 text-[#111827] focus:outline-none focus:ring-1 focus:ring-[#7557E9]"
             />
             <div className="absolute right-3 bottom-3">
               <button className="h-8 w-8 flex items-center justify-center text-[#6B7280] hover:text-[#111827]">
