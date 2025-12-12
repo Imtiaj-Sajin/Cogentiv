@@ -1,9 +1,7 @@
-// G:\codes\Cogentiv\src\components\ChatArea.tsx
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, PenLine, AtSign, Settings, Sparkles, Moon, Sun, Loader2 } from 'lucide-react';
+import { ArrowRight, PenLine, AtSign, Settings, Sparkles, Moon, Sun, Loader2, Send } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Toggle, toggleVariants } from '@/components/ui/toggle';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useTheme } from '@/context/ThemeContext';
 import { getGeminiResponse } from '@/services/mistralService';
@@ -16,9 +14,15 @@ const ChatArea: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tools' | 'chat'>('chat');
   const [messages, setMessages] = useState<Array<{id: string; text: string; isUser: boolean; timestamp?: string}>>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { theme, toggleTheme } = useTheme();
   
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -48,13 +52,11 @@ const ChatArea: React.FC = () => {
     try {
       const response = await getGeminiResponse(message);
       const aiResponse = {
-      id: uuidv4(),
-      text:
-        response?.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "I couldn't generate a response. Please try again.",
-      isUser: false,
-      timestamp: new Date().toLocaleTimeString()
-    };
+        id: uuidv4(),
+        text: response?.candidates?.[0]?.content?.parts?.[0]?.text || "I couldn't generate a response. Please try again.",
+        isUser: false,
+        timestamp: new Date().toLocaleTimeString()
+      };
       
       setMessages((prev) => [...prev, aiResponse]);
     } catch (error) {
@@ -84,53 +86,50 @@ const ChatArea: React.FC = () => {
   };
 
   return (
-    <div className="flex-grow flex flex-col h-full overflow-hidden bg-white dark:bg-[#111827] border-r border-[#EAECEF] dark:border-[#2D3748]">
-      <div className="border-b border-[#EAECEF] dark:border-[#2D3748] py-3 px-4 flex items-center justify-between">
-        <h2 className="text-base font-medium text-[#111827] dark:text-white">Chat with Cogentiv</h2>
+    <div className="flex-grow flex flex-col h-full overflow-hidden bg-transparent">
+      {/* Header with glassmorphism */}
+      <div className="backdrop-blur-xl bg-white/5 border-b border-white/10 py-3 px-4 flex items-center justify-between">
+        <h2 className="text-base font-medium text-white/90">Chat with Cogentiv</h2>
         <div className="flex items-center space-x-1">
           <Popover>
             <PopoverTrigger asChild>
-              <button className="h-8 w-8 flex items-center justify-center rounded hover:bg-[#F9FAFB] dark:hover:bg-[#1F2937]">
-                <Sparkles className="h-4 w-4 text-[#6B7280] dark:text-[#9CA3AF]" />
+              <button className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all duration-300 group">
+                <Sparkles className="h-4 w-4 text-white/60 group-hover:text-purple-400 transition-colors" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 bg-white dark:bg-[#1F2937] border-[#EAECEF] dark:border-[#2D3748]">
+            <PopoverContent className="w-56 backdrop-blur-xl bg-[#1a1a2e]/90 border-white/10 text-white shadow-2xl">
               <div className="space-y-2">
-                <h3 className="font-medium text-sm text-[#111827] dark:text-white">AI Features</h3>
-                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">Enhanced features for your AI assistant</p>
+                <h3 className="font-medium text-sm">AI Features</h3>
+                <p className="text-xs text-white/60">Enhanced features for your AI assistant</p>
               </div>
             </PopoverContent>
           </Popover>
           
           <Popover>
             <PopoverTrigger asChild>
-              <button className="h-8 w-8 flex items-center justify-center rounded hover:bg-[#F9FAFB] dark:hover:bg-[#1F2937]">
-                <Settings className="h-4 w-4 text-[#6B7280] dark:text-[#9CA3AF]" />
+              <button className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all duration-300 group">
+                <Settings className="h-4 w-4 text-white/60 group-hover:text-white transition-colors" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 bg-white dark:bg-[#1F2937] border-[#EAECEF] dark:border-[#2D3748]">
-              <div className="space-y-2">
-                <h3 className="font-medium text-sm text-[#111827] dark:text-white">Settings</h3>
-                <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">Customize your chat experience</p>
+            <PopoverContent className="w-64 backdrop-blur-xl bg-[#1a1a2e]/90 border-white/10 text-white shadow-2xl">
+              <div className="space-y-3">
+                <h3 className="font-medium text-sm">Settings</h3>
+                <p className="text-xs text-white/60">Customize your chat experience</p>
                 <div className="pt-2">
-                  <label className="text-xs font-medium text-[#6B7280] dark:text-[#9CA3AF] block mb-1">Theme</label>
-                  <ToggleGroup type="single" value={theme}>
+                  <label className="text-xs font-medium text-white/60 block mb-2">Theme</label>
+                  <ToggleGroup type="single" value={theme} className="justify-start bg-white/5 p-1 rounded-lg">
                     <ToggleGroupItem 
                       value="light" 
-                      className="text-xs"
-                      onClick={() => {
-                        if (theme !== 'light') toggleTheme();
-                      }}
+                      className="text-xs data-[state=on]:bg-white/20 data-[state=on]:text-white text-white/60 rounded-md px-3"
+                      onClick={() => { if (theme !== 'light') toggleTheme(); }}
                     >
                       <Sun className="h-3 w-3 mr-1" />
                       Light
                     </ToggleGroupItem>
                     <ToggleGroupItem 
                       value="dark" 
-                      className="text-xs"
-                      onClick={() => {
-                        if (theme !== 'dark') toggleTheme();
-                      }}
+                      className="text-xs data-[state=on]:bg-white/20 data-[state=on]:text-white text-white/60 rounded-md px-3"
+                      onClick={() => { if (theme !== 'dark') toggleTheme(); }}
                     >
                       <Moon className="h-3 w-3 mr-1" />
                       Dark
@@ -143,43 +142,62 @@ const ChatArea: React.FC = () => {
         </div>
       </div>
       
-      <div className="flex-grow overflow-auto p-4 flex flex-col bg-white dark:bg-[#111827]">
+      {/* Main Content Area */}
+      <div className="flex-grow overflow-auto p-4 flex flex-col">
         {messages.length > 0 ? (
-          <div className="w-full max-w-4xl mx-auto">
+          <div className="w-full max-w-4xl mx-auto animate-fade-in">
             <ChatResponseArea messages={messages} />
             <div ref={messagesEndRef} />
           </div>
         ) : (
-          <div className="flex-grow flex flex-col items-center justify-center text-center">
-            <h3 className="text-xl font-medium mb-6 text-[#111827] dark:text-white">Try a prompt in Chat mode</h3>
+          <div 
+            className={`flex-grow flex flex-col items-center justify-center text-center transition-all duration-1000 ease-out ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
+            <h3 className="text-2xl md:text-3xl font-semibold mb-2 text-white bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent animate-pulse-soft">
+              Ready to explore?
+            </h3>
+            <p className="text-white/50 mb-8 text-sm">Ask Cogentiv anything to get started</p>
             
-            <div className="w-full max-w-[800px]">
-              <div className="border border-[#EAECEF] dark:border-[#2D3748] rounded-lg overflow-hidden mb-6">
-                <div className="flex">
+            <div className="w-full max-w-[850px]">
+              {/* Tab Switcher */}
+              <div 
+                className={`backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl overflow-hidden mb-6 shadow-2xl transition-all duration-700 delay-200 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+              >
+                <div className="flex border-b border-white/10">
                   <button 
-                    className={`flex-1 py-3 text-xs font-medium ${
+                    className={`flex-1 py-4 text-xs font-medium tracking-wider transition-all duration-300 relative ${
                       activeTab === 'tools' 
-                        ? 'text-[#111827] dark:text-white border-b-2 border-[#FF6A71] tab-button' 
-                        : 'text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111827] dark:hover:text-white'
+                        ? 'text-white' 
+                        : 'text-white/40 hover:text-white/70'
                     }`}
                     onClick={() => setActiveTab('tools')}
                   >
                     USE TOOLS
+                    {activeTab === 'tools' && (
+                      <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" />
+                    )}
                   </button>
                   <button 
-                    className={`flex-1 py-3 text-xs font-medium ${
+                    className={`flex-1 py-4 text-xs font-medium tracking-wider transition-all duration-300 relative ${
                       activeTab === 'chat' 
-                        ? 'text-[#111827] dark:text-white border-b-2 border-[#FF6A71] tab-button' 
-                        : 'text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111827] dark:hover:text-white'
+                        ? 'text-white' 
+                        : 'text-white/40 hover:text-white/70'
                     }`}
                     onClick={() => setActiveTab('chat')}
                   >
                     JUST CHAT
+                    {activeTab === 'chat' && (
+                      <div className="absolute bottom-0 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" />
+                    )}
                   </button>
                 </div>
                 
                 <div className="p-6">
-                  <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mb-6">
+                  <p className="text-sm text-white/50 mb-6">
                     {activeTab === 'chat' 
                       ? 'Use Command A without any access to external sources.'
                       : 'Access various tools to enhance your experience.'}
@@ -193,20 +211,21 @@ const ChatArea: React.FC = () => {
                           title="ENGLISH TO FRENCH" 
                           description="Create a business plan for a marketing agency in French" 
                           onClick={handleToolCardClick}
+                          delay={0}
                         />
-                        
                         <ToolCard 
                           icon="🌐" 
                           title="MULTILINGUAL" 
                           description="Redacta una descripción de empleo Diseñador(a) Web" 
                           onClick={handleToolCardClick}
+                          delay={100}
                         />
-                        
                         <ToolCard 
                           icon="</>" 
                           title="CODE GENERATION" 
                           description="Help me clean up some data in Python" 
                           onClick={handleToolCardClick}
+                          delay={200}
                         />
                       </>
                     ) : (
@@ -216,20 +235,21 @@ const ChatArea: React.FC = () => {
                           title="WEB SEARCH" 
                           description="Search the web for the latest AI research papers" 
                           onClick={handleToolCardClick}
+                          delay={0}
                         />
-                        
                         <ToolCard 
                           icon="📊" 
                           title="DATA ANALYSIS" 
                           description="Analyze this CSV file and create visualizations" 
                           onClick={handleToolCardClick}
+                          delay={100}
                         />
-                        
                         <ToolCard 
                           icon="🧩" 
                           title="PLUGINS" 
                           description="Use the weather plugin to check the forecast" 
                           onClick={handleToolCardClick}
+                          delay={200}
                         />
                       </>
                     )}
@@ -241,37 +261,49 @@ const ChatArea: React.FC = () => {
         )}
       </div>
       
-      <div className="p-4 border-t border-[#EAECEF] dark:border-[#2D3748] bg-white dark:bg-[#111827]">
-        <div className="mx-auto">
-          <div className="relative">
-            <Textarea 
-              placeholder="Message..." 
-              className="w-full rounded-xl border border-[#666666] dark:border-[#4B5563] min-h-[56px] resize-none px-4 py-3 pr-12 text-[#111827] dark:text-white bg-white dark:bg-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#7557E9]"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={isLoading}
-            />
-            <div className="absolute right-3 bottom-3">
-              <button 
-                className="h-8 w-8 flex items-center justify-center text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#111827] dark:hover:text-white"
-                onClick={handleSendMessage}
-                disabled={!message.trim() || isLoading}
-              >
-                {isLoading ? (
-                  <Loader2 className="h-5 w-5 animate-spin text-[#7557E9]" />
-                ) : (
-                  <ArrowRight className={`h-5 w-5 ${message.trim() ? 'text-[#7557E9]' : ''}`} />
-                )}
-              </button>
+      {/* Input Area with glassmorphism */}
+      <div 
+        className={`p-4 backdrop-blur-xl bg-white/5 border-t border-white/10 transition-all duration-700 delay-500 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
+            <div className="relative">
+              <Textarea 
+                placeholder="Message Cogentiv..." 
+                className="w-full rounded-xl border border-white/20 min-h-[56px] resize-none px-4 py-3 pr-14 text-white bg-[#1a1a2e]/80 backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 placeholder:text-white/30 transition-all duration-300"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={isLoading}
+              />
+              <div className="absolute right-3 bottom-3">
+                <button 
+                  className={`h-9 w-9 flex items-center justify-center rounded-lg transition-all duration-300 ${
+                    message.trim() 
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105' 
+                      : 'bg-white/10 text-white/40'
+                  }`}
+                  onClick={handleSendMessage}
+                  disabled={!message.trim() || isLoading}
+                >
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-          <div className="flex items-center space-x-2 px-1 mt-2">
-            <button className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-[#F9FAFB] dark:hover:bg-[#1F2937]">
-              <PenLine className="h-4 w-4 text-[#6B7280] dark:text-[#9CA3AF]" />
+          <div className="flex items-center space-x-2 px-1 mt-3">
+            <button className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all duration-300 group">
+              <PenLine className="h-4 w-4 text-white/40 group-hover:text-white/80 transition-colors" />
             </button>
-            <button className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-[#F9FAFB] dark:hover:bg-[#1F2937]">
-              <AtSign className="h-4 w-4 text-[#6B7280] dark:text-[#9CA3AF]" />
+            <button className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all duration-300 group">
+              <AtSign className="h-4 w-4 text-white/40 group-hover:text-white/80 transition-colors" />
             </button>
           </div>
         </div>
@@ -285,19 +317,34 @@ interface ToolCardProps {
   title: string;
   description: string;
   onClick: (description: string) => void;
+  delay?: number;
 }
 
-const ToolCard: React.FC<ToolCardProps> = ({ icon, title, description, onClick }) => {
+const ToolCard: React.FC<ToolCardProps> = ({ icon, title, description, onClick, delay = 0 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div 
-      className="tool-card p-4 cursor-pointer transition-colors border border-[#EAECEF] dark:border-[#2D3748] rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#1F2937] bg-white dark:bg-[#1F2937]"
+      className="relative p-4 cursor-pointer group overflow-hidden rounded-xl transition-all duration-300"
       onClick={() => onClick(description)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{ animationDelay: `${delay}ms` }}
     >
-      <div className="mb-4 text-lg">{icon}</div>
-      <div className="text-xs font-semibold tracking-wide text-[#6B7280] dark:text-[#9CA3AF] mb-2">
-        {title}
+      {/* Card background with gradient border effect */}
+      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 group-hover:border-purple-500/30 transition-all duration-300" />
+      
+      {/* Hover glow effect */}
+      <div className={`absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+      
+      {/* Content */}
+      <div className="relative z-10">
+        <div className="mb-4 text-2xl transform group-hover:scale-110 transition-transform duration-300">{icon}</div>
+        <div className="text-[10px] font-semibold tracking-widest text-white/40 mb-2 group-hover:text-purple-300/80 transition-colors">
+          {title}
+        </div>
+        <div className="text-sm text-white/70 group-hover:text-white/90 transition-colors leading-relaxed">{description}</div>
       </div>
-      <div className="text-sm text-[#111827] dark:text-white">{description}</div>
     </div>
   );
 };
