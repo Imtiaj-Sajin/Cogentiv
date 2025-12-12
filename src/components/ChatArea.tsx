@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Toggle, toggleVariants } from '@/components/ui/toggle';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useTheme } from '@/context/ThemeContext';
-import { getMistralResponse } from '@/services/mistralService';
+import { getGeminiResponse } from '@/services/mistralService';
 import ChatResponseArea from './ChatResponseArea';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from '@/hooks/use-toast';
@@ -46,13 +46,15 @@ const ChatArea: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const response = await getMistralResponse(message);
+      const response = await getGeminiResponse(message);
       const aiResponse = {
-        id: uuidv4(),
-        text: response[0]?.generated_text || "I couldn't generate a response. Please try again.",
-        isUser: false,
-        timestamp: new Date().toLocaleTimeString()
-      };
+      id: uuidv4(),
+      text:
+        response?.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "I couldn't generate a response. Please try again.",
+      isUser: false,
+      timestamp: new Date().toLocaleTimeString()
+    };
       
       setMessages((prev) => [...prev, aiResponse]);
     } catch (error) {
