@@ -1,27 +1,31 @@
+import axios from "axios";
 
-import axios from 'axios';
+const API_KEY = "AIzaSyDpZf7SS7UFLDL-2Hqc2QJdoOpCHP_fRD4"; 
+const MODEL = "gemini-2.5-flash-lite";
 
-const API_KEY = "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";
-const MODEL = "mistralai/Mistral-7B-Instruct-v0.3";
-
-export const getMistralResponse = async (query: string) => {
+export const getGeminiResponse = async (query: string) => {
   try {
     const response = await axios.post(
-      `https://api-inference.huggingface.co/models/${MODEL}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`,
       {
-        inputs: query
+        contents: [
+          {
+            parts: [
+              { text: query }
+            ]
+          }
+        ]
       },
       {
         headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       }
     );
-    
+
     return response.data;
   } catch (error) {
-    console.error("Error fetching from Mistral:", error);
+    console.error("Error fetching from Gemini:", error);
     throw error;
   }
 };
