@@ -1,69 +1,92 @@
-// G:\codes\Cogentiv\src\components\ChatResponseArea.tsx
 import React from 'react';
 import ChatMessage from './ChatMessage';
-import { ThumbsUp, ThumbsDown, Copy, Share } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Copy, Share, RotateCcw } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
+
+interface Message {
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp?: string;
+}
 
 interface ChatResponseAreaProps {
-  messages: Array<{
-    id: string;
-    text: string;
-    isUser: boolean;
-    timestamp?: string;
-  }>;
+  messages: Message[];
 }
 
 const ChatResponseArea: React.FC<ChatResponseAreaProps> = ({ messages }) => {
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
-    // You could add a toast notification here
+    toast({
+      title: "Copied!",
+      description: "Message copied to clipboard",
+    });
   };
 
-  if (messages.length === 0) {
-    return null;
-  }
-
   return (
-    <div className="w-full flex flex-col">
-      {messages.map((message) => (
-        <div key={message.id} className="w-full">
+    <div className="space-y-6">
+      {messages.map((msg, index) => (
+        <div 
+          key={msg.id} 
+          className="animate-fade-in"
+          style={{ animationDelay: `${index * 50}ms` }}
+        >
           <ChatMessage 
-            message={message.text} 
-            isUser={message.isUser} 
-            timestamp={message.timestamp} 
+            message={msg.text} 
+            isUser={msg.isUser} 
+            timestamp={msg.timestamp}
           />
           
-          {!message.isUser && (
-            <div className="flex items-center space-x-2 ml-12 mb-6">
-              <button 
-                className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-                title="Thumbs Up"
-              >
-                <ThumbsUp className="h-4 w-4 text-gray-500" />
-              </button>
-              <button 
-                className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-                title="Thumbs Down"
-              >
-                <ThumbsDown className="h-4 w-4 text-gray-500" />
-              </button>
-              <button 
-                className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-                title="Copy to clipboard"
-                onClick={() => handleCopy(message.text)}
-              >
-                <Copy className="h-4 w-4 text-gray-500" />
-              </button>
-              <button 
-                className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-                title="Share"
-              >
-                <Share className="h-4 w-4 text-gray-500" />
-              </button>
+          {!msg.isUser && (
+            <div className="flex items-center space-x-1 mt-3 ml-12">
+              <ActionButton 
+                icon={<ThumbsUp className="h-3.5 w-3.5" />} 
+                tooltip="Helpful"
+                onClick={() => toast({ title: "Feedback recorded", description: "Thanks for your feedback!" })}
+              />
+              <ActionButton 
+                icon={<ThumbsDown className="h-3.5 w-3.5" />} 
+                tooltip="Not helpful"
+                onClick={() => toast({ title: "Feedback recorded", description: "Thanks for your feedback!" })}
+              />
+              <ActionButton 
+                icon={<Copy className="h-3.5 w-3.5" />} 
+                tooltip="Copy"
+                onClick={() => handleCopy(msg.text)}
+              />
+              <ActionButton 
+                icon={<RotateCcw className="h-3.5 w-3.5" />} 
+                tooltip="Regenerate"
+                onClick={() => toast({ title: "Regenerating...", description: "This feature is coming soon!" })}
+              />
+              <ActionButton 
+                icon={<Share className="h-3.5 w-3.5" />} 
+                tooltip="Share"
+                onClick={() => toast({ title: "Share", description: "Sharing is coming soon!" })}
+              />
             </div>
           )}
         </div>
       ))}
     </div>
+  );
+};
+
+interface ActionButtonProps {
+  icon: React.ReactNode;
+  tooltip: string;
+  onClick: () => void;
+}
+
+const ActionButton: React.FC<ActionButtonProps> = ({ icon, tooltip, onClick }) => {
+  return (
+    <button 
+      className="h-8 w-8 flex items-center justify-center rounded-lg text-white/30 hover:text-white/70 hover:bg-white/10 transition-all duration-200 group relative"
+      onClick={onClick}
+      title={tooltip}
+    >
+      {icon}
+    </button>
   );
 };
 
