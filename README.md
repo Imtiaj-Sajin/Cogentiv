@@ -1,4 +1,4 @@
-# Welcome to Cogentiv
+# Welcome to Cogentiv Model
 
 ## Project info
 
