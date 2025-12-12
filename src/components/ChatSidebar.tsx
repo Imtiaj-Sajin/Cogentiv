@@ -1,4 +1,4 @@
-
+// src\components\ChatSidebar.tsx
 import React from 'react';
 import { Search, Square, BookText } from 'lucide-react';
 

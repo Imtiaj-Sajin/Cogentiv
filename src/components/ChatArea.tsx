@@ -1,4 +1,4 @@
-
+// G:\codes\Cogentiv\src\components\ChatArea.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, PenLine, AtSign, Settings, Sparkles, Moon, Sun, Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';

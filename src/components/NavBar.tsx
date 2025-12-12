@@ -1,4 +1,4 @@
-
+// G:\codes\Cogentiv\src\components\NavBar.tsx
 import React from 'react';
 import { User } from 'lucide-react';
 

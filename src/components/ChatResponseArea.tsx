@@ -1,4 +1,4 @@
-
+// G:\codes\Cogentiv\src\components\ChatResponseArea.tsx
 import React from 'react';
 import ChatMessage from './ChatMessage';
 import { ThumbsUp, ThumbsDown, Copy, Share } from 'lucide-react';

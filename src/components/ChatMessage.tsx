@@ -1,4 +1,4 @@
-
+// G:\codes\Cogentiv\src\components\ChatMessage.tsx
 import React from 'react';
 import { User, Bot } from 'lucide-react';
 
