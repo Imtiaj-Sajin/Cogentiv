@@ -1,21 +1,12 @@
 import axios from "axios";
 
-const API_KEY = "AIzaSyDpZf7SS7UFLDL-2Hqc2QJdoOpCHP_fRD4"; 
-const MODEL = "gemini-2.5-flash-lite";
-
+// No API Key here anymore! 
+// It points to your own Vercel route
 export const getGeminiResponse = async (query: string) => {
   try {
     const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`,
-      {
-        contents: [
-          {
-            parts: [
-              { text: query }
-            ]
-          }
-        ]
-      },
+      '/api/chat', 
+      { query }, // We send just the query, the backend handles the rest
       {
         headers: {
           "Content-Type": "application/json"
@@ -25,7 +16,7 @@ export const getGeminiResponse = async (query: string) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error fetching from Gemini:", error);
+    console.error("Error fetching from Proxy:", error);
     throw error;
   }
 };
